@@ -1,0 +1,12 @@
+/dist/
+/reports/
+/*.exe
+/*-report*.json
+/.tools/
+/test/pester/TestResults.xml
+/testResults.xml
+/test/pester/*.stdout
+/test/pester/*.stderr
+/guest/scripts/*.stdout
+/guest/scripts/*.stderr
+/test/integration/*.auto.pkrvars.hcl

@@ -1,0 +1,23 @@
+# Safety and reports
+
+Never manually delete WinSxS, Windows Installer, SoftwareDistribution, catroot2, servicing metadata, security audit logs or application repair caches. The plugin uses DISM for superseded update components and preserves the update download cache. Windows Update cleanup does not mean resetting Windows Update.
+
+Ordinary temporary files must be older than the configured threshold. Explicit manifests authorize removal of recent build-owned files. Exclusive sharing checks skip ordinary locked files with a warning. A locked explicit manifest entry fails its operation so a retained credential file cannot silently pass. There is a small check/delete race; quiesce installers and provisioning jobs first. Run only in isolated template builds without interactive users or concurrent filesystem mutation; malicious concurrent path replacement is outside this path-based implementation's protection model. Reparse-point checks cover every visited ancestor and avoid recursive Remove-Item traversal. Profile-provider deletion refuses profiles containing any links, even Windows compatibility junctions; use a deliberately created junction-free temporary build profile.
+
+An empty child directory can be removed during cleanup; approved top-level roots remain. Excluded subtrees remain intact. No inactive-profile inference or generic home-directory deletion occurs. The current communicator profile, loaded profiles, special system profiles and profiles outside `SystemDrive\Users\packer-build-*` cannot be removed.
+
+WER cleanup delegates to the installed Windows Disk Cleanup handler. It never deletes WER directories directly and does not disable reporting. Server Core commonly lacks this capability. The handler's age rules are controlled by Windows, not `minimum_age_hours`. A reserved sagerun slot (65530) is temporarily configured and restored under a plugin mutex; do not run external Disk Cleanup jobs concurrently. Abrupt termination can prevent restoration; investigate the registry slot before reusing a timed-out guest.
+
+Event logs are preserved by default. Explicit selected channels are exported before clearing, and Security is always protected. Normal servicing, CBS, DISM, Panther and Sysprep logs are not cleanup targets. Retrieve selected guest exports with Packer's file provisioner (`direction = "download"`) before builder shutdown. Keep exported evidence outside published images and apply your retention controls. File/log cleanup does not constitute compliance validation.
+
+Deleting credential files does **not** guarantee forensic erasure, remove copies in snapshots/host logs, revoke credentials, or clear application credential stores. Use short-lived build credentials, revoke them in the build workflow, avoid persisting them to the image, and inspect the resulting image. The plugin never claims secure disk erasure.
+
+## JSON schema version 1
+
+Reports include profile, dry-run flag, UTC start, duration, run status/error, before/after OS facts and reboot reasons, capabilities, operations and Sysprep status. Each operation includes status (`success`, `dry_run`, `skipped`, `warning`, `failed`), message, literal removed paths, candidate paths, warnings, duration, logical bytes of successfully removed files, measured volume free bytes before/after, and native output where available.
+
+`free_bytes_after - free_bytes_before` is an observed SystemDrive free-space delta, which can be negative because Windows works concurrently. It is not attributed reclaimed capacity. `deleted_file_bytes` sums file lengths, not allocated blocks (compression, sparse files and hard links affect physical space). DISM's English analysis text reports its supported component-store measurements; no recursive WinSxS size estimate is made. WER, profile provider, event log and Recycle Bin APIs do not expose a complete per-file deletion list; these lists remain empty rather than fabricated.
+
+Reports contain sensitive file names and native servicing diagnostics. Host files are created with restrictive modes; Windows host ACLs are inherited from the destination directory. Choose an access-controlled report directory. `report_cleanup=false` suppresses host persistence, not guest working JSON. Workspace removal failure fails the build. Timeout/transport failures may leave diagnostic working files; discard or inspect that VM before publication.
+
+The SDK does not expose context on Upload/Download. Transport timeouts must also be configured on the builder. Host cancellation does not prove native servicing has stopped. Native calls have a bounded child-process wait, but terminating DISM or cleanmgr can leave servicing or handler state incomplete; a timeout is always a failed build.
