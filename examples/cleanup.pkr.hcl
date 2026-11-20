@@ -1,5 +1,3 @@
-# Copy the provisioner block into an existing Windows build after windows-restart.
-# This file uses the null builder to target an already-created disposable VM.
 packer {
   required_plugins {
     windows-cleanup = {
@@ -8,12 +6,14 @@ packer {
     }
   }
 }
+
 variable "host" { type = string }
 variable "username" { type = string }
 variable "password" {
   type      = string
   sensitive = true
 }
+
 source "null" "windows" {
   communicator   = "winrm"
   winrm_host     = var.host
@@ -22,6 +22,7 @@ source "null" "windows" {
   winrm_use_ssl  = true
   winrm_insecure = false
 }
+
 build {
   sources = ["source.null.windows"]
   provisioner "windows-cleanup" {

@@ -1,4 +1,4 @@
-# Safety and reports
+# 🛡️ Safety and reports
 
 Never manually delete WinSxS, Windows Installer, SoftwareDistribution, catroot2, servicing metadata, security audit logs or application repair caches. The plugin uses DISM for superseded update components and preserves the update download cache. Windows Update cleanup does not mean resetting Windows Update.
 
@@ -12,7 +12,7 @@ Event logs are preserved by default. Explicit selected channels are exported bef
 
 Deleting credential files does **not** guarantee forensic erasure, remove copies in snapshots/host logs, revoke credentials, or clear application credential stores. Use short-lived build credentials, revoke them in the build workflow, avoid persisting them to the image, and inspect the resulting image. The plugin never claims secure disk erasure.
 
-## JSON schema version 1
+## 📊 JSON schema version 1
 
 Reports include profile, dry-run flag, UTC start, duration, run status/error, before/after OS facts and reboot reasons, capabilities, operations and Sysprep status. Each operation includes status (`success`, `dry_run`, `skipped`, `warning`, `failed`), message, literal removed paths, candidate paths, warnings, duration, logical bytes of successfully removed files, measured volume free bytes before/after, and native output where available.
 

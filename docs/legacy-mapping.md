@@ -1,4 +1,4 @@
-# Sealing layer review and disposition
+# 🗺️ Sealing layer review and disposition
 
 Source: `C:\Git\Atea-TemplateFactory\DK-Factory\scripts\windows\600_SealingLayer`. All files at review time are inventoried with content hashes in [legacy-inventory.md](legacy-inventory.md). No supporting files beyond the inventoried PowerShell scripts were present. Commands, registry/service targets, exit-code handling, paths and OS gates were reviewed rather than copying scripts wholesale.
 

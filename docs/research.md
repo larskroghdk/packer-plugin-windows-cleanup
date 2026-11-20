@@ -1,4 +1,4 @@
-# Source review
+# 📚 Source review
 
 Reviewed 19 November 2026. The legacy scripts are evidence of build intent, not evidence that an operation is safe on every Windows release. Dispositions in the mapping are engineering judgments informed by the primary sources below; exclusions do not imply Microsoft forbids every use of that feature.
 

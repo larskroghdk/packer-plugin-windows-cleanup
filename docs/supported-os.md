@@ -1,4 +1,4 @@
-# Supported operating systems
+# 🖥️ Supported operating systems
 
 | Guest | Accepted base builds | Installation |
 | --- | --- | --- |

@@ -1,13 +1,13 @@
 #Requires -Version 5.1
+
 <#
 .SYNOPSIS
     Launches Sysprep only from the QEMU builder's shutdown command.
 
 .DESCRIPTION
-    Revalidates prerequisites and records an exclusive attempt marker, then starts
-    Sysprep asynchronously so the communicator returns before generalization.
-    QEMU must wait for power-off and fail if shutdown times out. Panther logs and
-    the attempt marker remain available in a failed image for investigation.
+    Revalidates prerequisites and records an exclusive attempt marker, then starts Sysprep asynchronously so the communicator returns before generalization.
+    QEMU must wait for power-off and fail if shutdown times out.
+    Panther logs and the attempt marker remain available in a failed image for investigation.
 
 .NOTES
     Author: Lars Krogh

@@ -1,4 +1,4 @@
-# Sysprep and builder shutdown
+# 🔌 Sysprep and builder shutdown
 
 `sysprep=true` **stages** an administrator-only finalizer; the provisioner never runs Sysprep, shuts down, or treats a communicator disconnect as success. Only the QEMU builder strategy is accepted. Cleanup reports record `staged_for_builder_shutdown`, never successful generalization.
 

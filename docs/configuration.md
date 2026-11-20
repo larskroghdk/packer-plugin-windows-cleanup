@@ -1,4 +1,4 @@
-# Configuration
+# ⚙️ Configuration
 
 All attributes are optional unless required by another opt-in. HCL unknown attributes and wrong types are rejected by the generated SDK schema.
 
@@ -37,7 +37,7 @@ All attributes are optional unless required by another opt-in. HCL unknown attri
 | `required_features` | list(string) | empty; DISM optional feature names that must be Enabled |
 | `sysprep` | bool | false; stage only, QEMU strategy; see lifecycle documentation |
 
-## Allowed paths
+## 📂 Allowed paths
 
 The guest derives Windows Temp, real non-special user profiles' AppData\Local\Temp, and ProgramData\PackerCleanup\Staging. The host validates absolute local syntax; the guest enforces these roots. Roots are fixed and cannot be extended through HCL. Move application staging into the dedicated staging root earlier in the build.
 

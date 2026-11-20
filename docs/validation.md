@@ -1,4 +1,4 @@
-# Local validation record
+# 📋 Local validation record
 
 Validated 19 November 2026 on a Windows development host:
 

@@ -1,8 +1,8 @@
-# Architecture and reference review
+# 🏗️ Architecture and reference review
 
 The source repository `../packer-plugin-windows-optimize` was reviewed as the architectural foundation: `main.go`, SDK registration, Config/FlatConfig HCL2 schema, communicator execution, facts and release classification, planner and journal contracts, embedded scripts, Go and Pester tests, tagged live tests, documentation, Makefile, GitHub build workflow, GoReleaser configuration, AGENTS/INVARIANTS and its local development skills.
 
-## Reused patterns
+## 🧩 Reused patterns
 
 | Reference pattern | Cleanup implementation and assessment |
 | --- | --- |
@@ -19,7 +19,7 @@ The source repository `../packer-plugin-windows-optimize` was reviewed as the ar
 | Documentation and tests | Go protocol/config tests, PS5.1 Pester behavior tests, opt-in disposable guest tests; local instructions focus on cleanup boundaries |
 | GitHub Actions/GoReleaser | Windows checks, generated-schema check, static analysis, embedded scripts, signed draft releases. Host binaries also target Linux/macOS because the Packer host need not be Windows |
 
-## Flow
+## 🔄 Flow
 
 Prepare decodes, defaults and validates config. Provision creates the private workspace, uploads scripts and input JSON, detects facts, rejects unsafe build state, executes selected categories in a fixed order, validates the system, optionally stages a finalizer, and runs postflight detection. It then removes only its own workspace and writes the host report. A timeout fails the build and leaves the workspace because a servicing child may still be running.
 
@@ -27,6 +27,6 @@ Component cleanup is coalesced with Windows Update cleanup. Fresh facts are obta
 
 The reference's reversible optimization model is a good fit for registry/service tuning, but not for deletion. Cleanup deliberately has no rollback claim, broad catalog abstraction, arbitrary command execution interface, dependency on legacy organization scripts, or automatic repair of a damaged component store.
 
-## Limits that affect release readiness
+## 🚦 Limits that affect release readiness
 
 Packer provisioners cannot inspect later provisioner blocks or a builder's shutdown settings. Sysprep staging therefore cannot enforce the surrounding HCL lifecycle. The operator must use the documented QEMU shutdown contract and validate the deployed clone. Other builders/cloud agents require their own tested strategies. Guest OS detection and native servicing still require real VM matrix validation; mocks do not certify those mechanisms.

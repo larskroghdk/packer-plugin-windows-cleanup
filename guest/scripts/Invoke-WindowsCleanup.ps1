@@ -5,8 +5,9 @@
     Exchanges JSON with the Packer provisioner.
 
 .DESCRIPTION
-    Runs one detection or cleanup action. Operation failures are returned in JSON;
-    protocol failures exit nonzero. This entry point never reboots or shuts down.
+    Runs one detection or cleanup action.
+    Operation failures are returned in JSON; protocol failures exit nonzero.
+    This entry point never reboots or shuts down.
 
 .NOTES
     Author: Lars Krogh

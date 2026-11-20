@@ -4,8 +4,9 @@
     Implements guarded cleanup operations for disposable Windows image builds.
 
 .DESCRIPTION
-    Dot-source this file. No operation runs at import. Paths are literal, confined
-    to fixed roots, and checked for reparse points before traversal and deletion.
+    Dot-source this file.
+    No operation runs at import.
+    Paths are literal, confined to fixed roots, and checked for reparse points before traversal and deletion.
 
 .NOTES
     Author: Lars Krogh

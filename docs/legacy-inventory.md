@@ -1,4 +1,4 @@
-# Legacy source inventory
+# 🗃️ Legacy source inventory
 
 Reviewed 19 November 2026. Content hashes identify the exact local files examined. No legacy script is executed by the plugin.
 
