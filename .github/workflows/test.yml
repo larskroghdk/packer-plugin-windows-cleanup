@@ -1,11 +1,14 @@
-name: Check
+name: Test
+
 on:
   workflow_call:
   push:
     branches: [main]
   pull_request:
+
 permissions:
   contents: read
+
 jobs:
   check:
     runs-on: windows-2025
@@ -27,7 +30,7 @@ jobs:
           go generate ./provisioner
           git diff --exit-code -- provisioner/config.hcl2spec.go
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Check and test
-        run: ./scripts/check.ps1
+      - name: Test
+        run: ./scripts/test.ps1
       - name: Verify plugin protocol
         run: go run . describe

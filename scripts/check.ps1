@@ -1,47 +1,53 @@
-#Requires -Version 5.1
-
 <#
 .SYNOPSIS
-    Runs deterministic local checks without contacting a Windows guest.
+    Runs the repository's Go formatting, module, test, vet and build checks.
+
+.DESCRIPTION
+    Fails on the first problem.
+    Builds the plugin into bin/ with the platform's executable name.
+    Run from any directory; paths resolve from the repository root.
+
+.EXAMPLE
+    ./scripts/check.ps1
 
 .NOTES
-    Author: Lars Krogh
-    Version: 0.1.0
+    Author  : Lars Krogh
+    Version : 1.1.0
+    Requires the Go toolchain named in go.mod.
 #>
 
 [CmdletBinding()]
 param()
 
+Set-StrictMode -Version Latest
+
 $ErrorActionPreference = 'Stop'
 
-function Invoke-Check {
-    param(
-        [string]$Command,
-        [string[]]$Arguments
-    )
-    Write-Output ("Checking: " + $Command + ' ' + ($Arguments -join ' '))
-    & $Command @Arguments
+Push-Location (Split-Path -Parent $PSScriptRoot)
+try {
+    $files = @(git ls-files --cached --others --exclude-standard '*.go')
     if ($LASTEXITCODE -ne 0) {
-        throw "$Command failed with exit code $LASTEXITCODE"
+        throw 'git ls-files failed'
+    }
+    if ($files.Count -gt 0) {
+        $unformatted = & gofmt -l @files
+        if ($LASTEXITCODE -ne 0 -or $unformatted) {
+            throw "Go formatting required: $unformatted"
+        }
+    }
+    $checks = @(
+        , @('mod', 'tidy', '-diff')
+        , @('test', './...')
+        , @('vet', './...')
+        , @('build', '-o', 'bin/', '.')
+    )
+    foreach ($arguments in $checks) {
+        & go @arguments
+        if ($LASTEXITCODE -ne 0) {
+            throw "go $arguments failed"
+        }
     }
 }
-
-if (@(& gofmt -l main.go main_test.go provisioner guest internal test/integration).Count) {
-    throw 'Run gofmt'
+finally {
+    Pop-Location
 }
-
-Invoke-Check -Command go -Arguments @('build', './...')
-Invoke-Check -Command go -Arguments @('vet', './...')
-Invoke-Check -Command go -Arguments @('vet', '-tags', 'integration', './test/integration')
-Invoke-Check -Command staticcheck -Arguments @('./...')
-Invoke-Check -Command go -Arguments @('test', './...')
-
-$findings = @(Invoke-ScriptAnalyzer -Path guest/scripts -Recurse -Severity Warning, Error)
-if ($findings.Count) {
-    $findings | Format-Table -Wrap;
-    throw 'PSScriptAnalyzer findings'
-}
-
-Invoke-Check -Command packer -Arguments @('fmt', '-check', '-recursive', 'examples')
-Invoke-Check -Command packer -Arguments @('fmt', '-check', '-recursive', 'test/integration')
-Invoke-Check -Command powershell.exe -Arguments @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', 'Import-Module Pester -MinimumVersion 5.0; Invoke-Pester -Path test/pester -Output Detailed -CI')

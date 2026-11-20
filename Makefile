@@ -1,6 +1,6 @@
 .PHONY: check test generate build
 check:
-	pwsh -NoProfile -File scripts/check.ps1
+	pwsh -NoProfile -File scripts/test.ps1
 test:
 	go test ./...
 generate:

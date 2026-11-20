@@ -1,6 +1,6 @@
 # 🧪 Testing and release gates
 
-Run `./scripts/check.ps1`. It builds, vets, runs staticcheck and Go tests, checks HCL formatting and PowerShell analysis, and runs Pester under **Windows PowerShell 5.1**, not only pwsh. Install Pester 5.6.1 or later and PSScriptAnalyzer 1.22.0. Use packer-sdc v0.6.13 for `go generate ./provisioner`; generated output must have no diff. Go dependencies/toolchain are pinned to the reference project and checksum file.
+Run `./scripts/test.ps1`. It builds, vets, runs staticcheck and Go tests, checks HCL formatting and PowerShell analysis, and runs Pester under **Windows PowerShell 5.1**, not only pwsh. Install Pester 5.6.1 or later and PSScriptAnalyzer 1.22.0. Use packer-sdc v0.6.13 for `go generate ./provisioner`; generated output must have no diff. Go dependencies/toolchain are pinned to the reference project and checksum file.
 
 Go tests cover plugin describe registration, real HCL type decoding, defaults/category coalescing, path syntax, supported OS classification, protocol transport failures, deadline propagation, reports, pending reboots, unsupported capability policy, fail-on-error, WinRM gating and finalizer-only Sysprep. Pester exercises actual TestDrive deletions, stale/fresh files, manifests, idempotency, exclusions, locks and junction refusal. Mocked servicing checks commands/ResetBase/dry-run; health tests inspect state, not just exit success. Native exit/timeout tests run harmless child PowerShell only. These tests never clean the development host.
 

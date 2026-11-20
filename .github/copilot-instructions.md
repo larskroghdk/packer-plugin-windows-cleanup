@@ -27,7 +27,7 @@ Follow [AGENTS.md](../AGENTS.md). This repository implements a Go Packer provisi
 
 ## Validation and documentation
 
-- Run `./scripts/check.ps1` before delivery. It covers Go formatting, build, vet, staticcheck and tests, PowerShell analysis, HCL formatting and Pester under Windows PowerShell 5.1.
+- Run `./scripts/test.ps1` before delivery. It covers Go formatting, build, vet, staticcheck and tests, PowerShell analysis, HCL formatting and Pester under Windows PowerShell 5.1.
 - Add behavior tests for changed cleanup logic, including relevant dry-run, path-boundary, reparse-point, exclusion and failure cases.
 - When configuration changes, regenerate the HCL2 schema and verify the generated diff.
 - Maintain [docs/legacy-mapping.md](../docs/legacy-mapping.md) when a legacy operation's disposition changes.
