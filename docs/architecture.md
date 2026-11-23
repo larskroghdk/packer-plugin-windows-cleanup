@@ -17,7 +17,7 @@ The source repository `../packer-plugin-windows-optimize` was reviewed as the ar
 | Restart orchestration | Not copied: build owner must finish updates/restart before cleanup; no competing reboot logic |
 | Reports on failure | Host report writes atomically, even for detection/transport failures; operation statuses retain partial work |
 | Documentation and tests | Go protocol/config tests, PS5.1 Pester behavior tests, opt-in disposable guest tests; local instructions focus on cleanup boundaries |
-| GitHub Actions/GoReleaser | Windows checks, generated-schema check, static analysis, embedded scripts, signed draft releases. Host binaries also target Linux/macOS because the Packer host need not be Windows |
+| GitHub Actions/GoReleaser | Windows checks, generated-schema check, static analysis, embedded scripts, signed public plugin releases. Host binaries also target Linux/macOS because the Packer host need not be Windows |
 
 ## 🔄 Flow
 

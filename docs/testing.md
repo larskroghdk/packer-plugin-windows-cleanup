@@ -26,4 +26,4 @@ Run Server 2016/2019/2022/2025 with both Core and Desktop Experience; Windows 10
 
 Run a separate QEMU build for Sysprep: stage last, execute only through shutdown_command, observe normal power-off, verify failure/timeout does not produce a released image, boot a clone through OOBE, verify generalized image state and diagnostics, and ensure another attempt is refused. Also test user Appx mismatches, domain-joined machines and pending servicing. Null-builder tests do not certify shutdown.
 
-Publishing stays a signed **draft** until the matrix and image security/compliance checks are reviewed. GitHub requires `GPG_PRIVATE_KEY` and `GPG_PASSPHRASE`; do not tag a public release before validating the tag's exact commit. A passing local suite is not evidence of completed VM tests.
+An authorized version tag publishes a signed release after reusable checks pass. Review the candidate before pushing its tag. GitHub requires `GPG_PRIVATE_KEY` and `GPG_PASSPHRASE`; do not tag a public release before validating the tag's exact commit. A passing local suite is not evidence of completed VM tests.

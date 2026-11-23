@@ -1,7 +1,19 @@
-# Working on windows-cleanup
+# Codex project instructions
 
-Use the Packer SDK lifecycle and JSON guest protocol. Keep PowerShell compatible with 5.1, ASCII and CRLF. Run `./scripts/test.ps1` before delivery. Guest mutation tests must remain confined to Pester TestDrive or explicit disposable live VMs.
+This repository implements `windows-cleanup`. Read the [project architecture and constraints](.agents/architecture/overview.md) and the owning module's AGENTS.md before editing. Existing invariants and domain-specific safeguards remain authoritative.
 
-Never expand deletion roots to make a failing test pass. Check syntax, path boundaries, every ancestor and each visited entry for reparse points. Keep Installer, WinSxS, servicing stores, production profiles, networking, activation and WinRM intact. New destructive operations require explicit configuration, a legacy/source rationale, dry-run behavior, reporting and behavior tests.
+## Shared knowledge
 
-Sysprep is builder-owned; do not invoke shutdown/generalization in the ordinary provisioner. Transport, timeout and final validation failures must remain build failures. Do not claim real Windows validation from mocks. Maintain docs/legacy-mapping.md when the legacy disposition changes.
+- [Go standards](.agents/standards/go.md)
+- [PowerShell standards](.agents/standards/powershell.md)
+- [Testing requirements](.agents/standards/testing.md)
+- [Security practices](.agents/standards/security.md)
+
+## Skills
+
+- `code-review`: [code-review](.agents/skills/code-review/SKILL.md).
+- `go-development`: [go-development](.agents/skills/go-development/SKILL.md).
+- `powershell-development`: [powershell-development](.agents/skills/powershell-development/SKILL.md).
+- `release-plugin`: [release-plugin](.agents/skills/release-plugin/SKILL.md).
+
+Read only the relevant shared workflow. `.agents/skills` is the single source of skill instructions, not a general Codex configuration directory. See [agent guidance](docs/agent-guidance.md). Skill activation grants no additional publication or guest-operation authority.
