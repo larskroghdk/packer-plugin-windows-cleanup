@@ -45,7 +45,7 @@ var actionPattern = regexp.MustCompile(`-Action '([^']+)' -InputPath '([^']+)' -
 
 func (f *fakeCommunicator) Start(ctx context.Context, cmd *packer.RemoteCmd) error {
 	script := decodeCommand(cmd.Command)
-	if strings.Contains(script, "New-Item -ItemType Directory -Path $d") {
+	if strings.Contains(script, "[IO.Directory]::CreateDirectory($d,$acl)") {
 		fmt.Fprintln(cmd.Stdout, `C:\Windows\Temp\packer-windows-cleanup-1234`)
 		cmd.SetExited(0)
 		return nil

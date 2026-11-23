@@ -49,9 +49,17 @@ func (r *remote) exec(ctx context.Context, script string) ([]byte, error) {
 	return stdout.Bytes(), nil
 }
 
+// workspaceScript returns PowerShell that creates the private workspace
+// packer-windows-cleanup-<id> below %SystemRoot%\Temp and prints its path.
+// The directory must be new, is created together with its protected ACL, and
+// must be owned by SYSTEM, Administrators or the current user, so an
+// unprivileged user cannot plant it or its contents.
+func workspaceScript(id string) string {
+	return `$ErrorActionPreference='Stop'; $base=Join-Path $env:SystemRoot 'Temp'; $p=$base; while($p){if((Get-Item -LiteralPath $p -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Reparse point in workspace ancestry'};$p=Split-Path -Parent $p}; $d=Join-Path $base 'packer-windows-cleanup-` + id + `'; if(Test-Path -LiteralPath $d){throw 'Workspace already exists'}; $acl=New-Object Security.AccessControl.DirectorySecurity; $acl.SetAccessRuleProtection($true,$false); foreach($sid in @('S-1-5-18','S-1-5-32-544')){$id=New-Object Security.Principal.SecurityIdentifier($sid);$rule=New-Object Security.AccessControl.FileSystemAccessRule($id,'FullControl','ContainerInherit,ObjectInherit','None','Allow');$acl.AddAccessRule($rule)}; $null=[IO.Directory]::CreateDirectory($d,$acl); $owner=(Get-Acl -LiteralPath $d).GetOwner([Security.Principal.SecurityIdentifier]).Value; if($owner -notin 'S-1-5-18','S-1-5-32-544',[Security.Principal.WindowsIdentity]::GetCurrent().User.Value){throw ('Workspace is owned by '+$owner)}; Write-Output $d`
+}
+
 func (r *remote) install(ctx context.Context) error {
-	// A fresh directory with a protected ACL prevents unprivileged path replacement.
-	script := `$ErrorActionPreference='Stop'; $base=Join-Path $env:SystemRoot 'Temp'; $p=$base; while($p){if((Get-Item -LiteralPath $p -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Reparse point in workspace ancestry'};$p=Split-Path -Parent $p}; $d=Join-Path $base 'packer-windows-cleanup-` + uuid.TimeOrderedUUID() + `'; $null=New-Item -ItemType Directory -Path $d; $acl=New-Object Security.AccessControl.DirectorySecurity; $acl.SetAccessRuleProtection($true,$false); foreach($sid in @('S-1-5-18','S-1-5-32-544')){$id=New-Object Security.Principal.SecurityIdentifier($sid);$rule=New-Object Security.AccessControl.FileSystemAccessRule($id,'FullControl','ContainerInherit,ObjectInherit','None','Allow');$acl.AddAccessRule($rule)}; Set-Acl -LiteralPath $d -AclObject $acl; Write-Output $d`
+	script := workspaceScript(uuid.TimeOrderedUUID())
 	data, err := r.exec(ctx, script)
 	if err != nil {
 		return fmt.Errorf("create private workspace: %w", err)
