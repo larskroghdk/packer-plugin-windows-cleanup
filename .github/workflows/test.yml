@@ -23,6 +23,7 @@ jobs:
         run: |
           go install github.com/hashicorp/packer-plugin-sdk/cmd/packer-sdc@v0.6.13
           go install honnef.co/go/tools/cmd/staticcheck@2025.1.1
+          go install golang.org/x/vuln/cmd/govulncheck@v1.10.0
           Install-Module PSScriptAnalyzer -RequiredVersion 1.22.0 -Force -Scope CurrentUser
           powershell.exe -NoProfile -Command "Set-PSRepository PSGallery -InstallationPolicy Trusted; Install-Module Pester -RequiredVersion 5.6.1 -Force -Scope CurrentUser -SkipPublisherCheck"
       - name: Check generated schema

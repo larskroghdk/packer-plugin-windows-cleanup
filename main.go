@@ -10,7 +10,7 @@ import (
 )
 
 var version = "0.1.0"
-var versionPrerelease = "dev"
+var versionPrerelease = ""
 
 func main() {
 	plugins := plugin.NewSet()

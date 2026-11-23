@@ -6,7 +6,7 @@
 
 .NOTES
     Author: Lars Krogh
-    Version: 0.1.0
+    Version: 0.2.0
 #>
 
 [CmdletBinding()]
@@ -30,10 +30,12 @@ if (@(& gofmt -l main.go main_test.go provisioner guest internal test/integratio
     throw 'Run gofmt'
 }
 
+Invoke-Check -Command go -Arguments @('mod', 'tidy', '-diff')
 Invoke-Check -Command go -Arguments @('build', './...')
 Invoke-Check -Command go -Arguments @('vet', './...')
 Invoke-Check -Command go -Arguments @('vet', '-tags', 'integration', './test/integration')
 Invoke-Check -Command staticcheck -Arguments @('./...')
+Invoke-Check -Command govulncheck -Arguments @('./...')
 Invoke-Check -Command go -Arguments @('test', './...')
 
 $findings = @(Invoke-ScriptAnalyzer -Path guest/scripts -Recurse -Severity Warning, Error)
