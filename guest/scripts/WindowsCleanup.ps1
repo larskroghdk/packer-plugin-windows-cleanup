@@ -10,7 +10,7 @@
 
 .NOTES
     Author: Lars Krogh
-    Version: 0.1.0
+    Version: 0.1.1
 #>
 
 function Assert-WCPath {
@@ -242,7 +242,7 @@ function Remove-WCItem {
         return
     }
     try {
-        $handle = [IO.File]::Open($full, 'Open', 'ReadWrite', 'None'); $handle.Dispose()
+        $handle = [IO.File]::Open($full, 'Open', 'Read', 'None'); $handle.Dispose()
     }
     catch [IO.IOException] {
         if ($Manifest) {

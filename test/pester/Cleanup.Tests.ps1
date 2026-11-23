@@ -73,6 +73,16 @@ Describe 'Guarded file removal' {
         Test-Path -LiteralPath $stale | Should -BeTrue
         $result.candidates.Count | Should -Be 0
     }
+    It 'removes stale read-only files and keeps processing the root' {
+        $readOnly = Join-Path $root 'a-readonly.txt'; [IO.File]::WriteAllText($readOnly, 'ro')
+        $item = Get-Item -LiteralPath $readOnly
+        $item.LastWriteTimeUtc = [DateTime]::UtcNow.AddDays(-3)
+        $item.IsReadOnly = $true
+        Remove-WCItem -Path $root -Roots @($root) -Options $options -Result $result
+        Test-Path -LiteralPath $readOnly | Should -BeFalse
+        Test-Path -LiteralPath $stale | Should -BeFalse
+        $result.warnings.Count | Should -Be 0
+    }
     It 'skips locked files with a warning' {
         $handle = [IO.File]::Open($stale, 'Open', 'ReadWrite', 'None')
         try { Remove-WCItem -Path $root -Roots @($root) -Options $options -Result $result }

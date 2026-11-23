@@ -53,7 +53,11 @@ type Config struct {
 	ctx                   interpolate.Context
 }
 
-var safePath = regexp.MustCompile(`(?i)^[a-z]:\\[^<>:"/|?*\x00-\x1f]+$`)
+var (
+	safePath   = regexp.MustCompile(`(?i)^[a-z]:\\[^<>:"/|?*\x00-\x1f]+$`)
+	deviceName = regexp.MustCompile(`^(CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])$`)
+	localSID   = regexp.MustCompile(`^S-1-5-21-(\d+-){3}\d+$`)
+)
 
 // validatePath rejects alternate streams, device/UNC paths and ambiguous Win32
 // normalization. The guest additionally enforces roots and rejects reparse points.
@@ -66,7 +70,7 @@ func validatePath(path string) error {
 			return fmt.Errorf("ambiguous path %q", path)
 		}
 		stem := strings.ToUpper(strings.SplitN(part, ".", 2)[0])
-		if regexp.MustCompile(`^(CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])$`).MatchString(stem) {
+		if deviceName.MatchString(stem) {
 			return fmt.Errorf("device name in %q", path)
 		}
 	}
@@ -123,7 +127,7 @@ func (c *Config) prepare(raws ...any) error {
 		return fmt.Errorf("remove_user_profiles requires build_profile_sids")
 	}
 	for _, sid := range c.BuildProfileSIDs {
-		if !regexp.MustCompile(`^S-1-5-21-(\d+-){3}\d+$`).MatchString(sid) {
+		if !localSID.MatchString(sid) {
 			return fmt.Errorf("invalid build profile SID")
 		}
 	}

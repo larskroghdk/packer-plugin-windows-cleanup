@@ -130,8 +130,8 @@ func (p *Provisioner) Provision(ctx context.Context, ui packer.Ui, comm packer.C
 	if before.UpdateBusy {
 		return fmt.Errorf("active update or installer detected; wait for completion before cleanup")
 	}
-	if (before.PendingReboot || before.UpdateBusy) && cfg.PendingRebootPolicy == "error" {
-		return fmt.Errorf("pending reboot or active update detected; finish updates and use windows-restart before cleanup")
+	if before.PendingReboot && cfg.PendingRebootPolicy == "error" {
+		return fmt.Errorf("pending reboot detected; restart with windows-restart before cleanup, or set pending_reboot_policy to skip_servicing")
 	}
 	blocked := false
 	for _, id := range cfg.operations() {
@@ -149,9 +149,9 @@ func (p *Provisioner) Provision(ctx context.Context, ui packer.Ui, comm packer.C
 			op.Status = "skipped"
 			op.Message = "earlier cleanup or validation was incomplete"
 			r.SysprepStatus = "blocked"
-		} else if (before.PendingReboot || before.UpdateBusy) && (id == "component_store" || id == "validate_system" || id == "stage_sysprep") {
+		} else if before.PendingReboot && (id == "component_store" || id == "validate_system" || id == "stage_sysprep") {
 			op.Status = "skipped"
-			op.Message = "pending reboot or active update; servicing deferred"
+			op.Message = "pending reboot; servicing deferred"
 			blocked = true
 			r.Status = "warnings"
 		} else if capability != "" && !before.Capabilities[capability] {
@@ -216,7 +216,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packer.Ui, comm packer.C
 	if after.UpdateBusy {
 		return fmt.Errorf("update or installer became active during cleanup; do not capture this image")
 	}
-	if after.PendingReboot || after.UpdateBusy {
+	if after.PendingReboot {
 		if cfg.PendingRebootPolicy == "error" {
 			return fmt.Errorf("cleanup left pending servicing/reboot; restart before capture")
 		}
