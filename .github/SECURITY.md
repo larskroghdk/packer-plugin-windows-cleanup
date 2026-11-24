@@ -2,18 +2,11 @@
 
 ## Supported versions
 
-Only the latest release receives security fixes. Fixes ship in a new release, not as backports.
-
-| Version | Supported |
-| --- | --- |
-| Latest release | Yes |
-| Older releases | No |
+This project is pre-1.0 and has a single release line. Fixes land on `main` and ship in the next release; older releases are not patched.
 
 ## Reporting a vulnerability
 
-Do not open a public issue, pull request or discussion.
-
-Use [private vulnerability reporting](https://github.com/larskroghdk/packer-plugin-windows-cleanup/security/advisories/new) through the repository's "Report a vulnerability" button on the Security tab.
+When private vulnerability reporting is available, use "Report a vulnerability" on the Security tab. If it is unavailable, [open a public issue](https://github.com/larskroghdk/packer-plugin-windows-cleanup/issues/new) asking the maintainer for a private channel. Do not include vulnerability details in that issue.
 
 Include the plugin version, Packer version and builder, guest OS and build, the provisioner block with secrets removed, the relevant JSON report or `PACKER_LOG=1` output with secrets and sensitive file names removed, steps to reproduce, and impact.
 
@@ -30,6 +23,8 @@ The plugin runs elevated Windows PowerShell 5.1 on the guest over WinRM and dele
 - A guest workspace, uploaded script or staged Sysprep finalizer that a non-administrator can read or replace.
 - Credentials or WinRM passwords exposed in Packer UI output, logs or release artifacts.
 - A transport, timeout or final-validation failure, or an active-servicing or pending-reboot gate, that does not fail the build when it should.
+- A registry change other than the Disk Cleanup `StateFlags65530` slot, or that slot not restored after a normally completed run.
+- An operation that reports success while leaving servicing, the component store, WinRM or Sysprep finalizer state broken or inconsistent (system integrity).
 - Weaknesses in the release or CI workflows, including unpinned Actions or excessive token permissions, that could compromise published plugin binaries.
 
 Out of scope:
@@ -41,9 +36,7 @@ Out of scope:
 
 ## Process
 
-The maintainer acknowledges reports, confirms or rejects the issue, and agrees a disclosure date with the reporter. The target acknowledgement time is within 7 days. This is a single-maintainer project, so timelines are best effort.
-
-Fixes are released in a new version and disclosed through a GitHub Security Advisory. A CVE is requested through GitHub when appropriate. Reporters are credited unless they prefer not to be.
+The maintainer handles reports on a best-effort basis and coordinates a disclosure date with the reporter. Fixed issues are published as GitHub Security Advisories.
 
 ## Verifying releases
 

@@ -7,7 +7,7 @@ body:
       value: |
         Issues are public. Remove passwords, tokens, keys, host names and sensitive file names from everything you paste. JSON reports list removed and candidate paths.
 
-        Report deletion outside the allowed roots, exclusion bypasses and other security issues [privately](https://github.com/larskroghdk/packer-plugin-windows-cleanup/security/advisories/new) instead.
+        Do not report deletion outside the allowed roots, exclusion bypasses or other security issues here. Follow the [security policy](https://github.com/larskroghdk/packer-plugin-windows-cleanup/security/policy) instead.
   - type: input
     id: plugin-version
     attributes:
@@ -69,6 +69,11 @@ body:
       placeholder: 10.0.20348.2849
     validations:
       required: true
+  - type: input
+    id: edition
+    attributes:
+      label: Edition
+      description: For example Datacenter, Standard, Enterprise or Pro; use `product_name` from the report if available.
   - type: dropdown
     id: installation
     attributes:
@@ -78,6 +83,36 @@ body:
         - Server Core
     validations:
       required: true
+  - type: dropdown
+    id: affected-operations
+    attributes:
+      label: Affected operations
+      multiple: true
+      options:
+        - temporary_files
+        - component_store / windows_update
+        - reset_component_base
+        - installer_cleanup
+        - provisioning_artifacts
+        - log_cleanup
+        - error_reporting
+        - empty_recycle_bin
+        - remove_user_profiles
+        - clear_event_logs
+        - validate_system
+        - sysprep
+        - Host report
+        - Other
+  - type: dropdown
+    id: reboot-state
+    attributes:
+      label: Reboot state
+      description: See `pending_reboot` and `pending_reasons` in the report, and the `pending_reboot_policy` setting.
+      options:
+        - No pending reboot
+        - Pending reboot before the run
+        - Pending reboot after the run
+        - Unknown
   - type: textarea
     id: config
     attributes:
@@ -112,6 +147,12 @@ body:
       label: Report
       description: The failing operations, warnings and run status from the JSON report, or the whole file.
       render: json
+  - type: textarea
+    id: error-message
+    attributes:
+      label: Error message
+      description: The exact error from Packer output, separate from the full log.
+      render: text
   - type: textarea
     id: log
     attributes:

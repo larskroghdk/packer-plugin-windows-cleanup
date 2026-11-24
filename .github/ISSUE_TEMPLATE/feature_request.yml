@@ -33,7 +33,12 @@ body:
     validations:
       required: true
   - type: textarea
+    id: windows-versions
+    attributes:
+      label: Windows versions
+      description: Which supported guests (Server 2016, 2019, 2022 or 2025; Windows 10 1607 or later; Windows 11) and installation types (Server Desktop Experience, Server Core or client) does this apply to?
+  - type: textarea
     id: safety
     attributes:
       label: Sources and safety
-      description: For a cleanup operation, the exact paths or Windows mechanism, a Microsoft or legacy source that supports it, what must be preserved, and what a dry run should report.
+      description: For cleanup, give exact paths or mechanism, a Microsoft or legacy source, what to preserve, and dry-run output. Note impact on reboot or servicing, WinRM and builder-owned Sysprep finalizer staging.
