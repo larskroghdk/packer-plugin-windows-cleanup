@@ -1,11 +1,14 @@
 #Requires -Version 5.1
+
 <#
 .SYNOPSIS
     Tests cleanup in isolated TestDrive paths and mocks servicing APIs.
+
 .NOTES
     Author: Lars Krogh
     Version: 0.1.0
 #>
+
 BeforeAll {
     . (Join-Path $PSScriptRoot '..\..\guest\scripts\WindowsCleanup.ps1')
     function New-TestOptions {
@@ -47,7 +50,8 @@ Describe 'Guarded file removal' {
         $null = New-Item -ItemType Directory -Path $root
         $stale = Join-Path $root 'old.txt'; [IO.File]::WriteAllText($stale, 'abc')
         (Get-Item -LiteralPath $stale).LastWriteTimeUtc = [DateTime]::UtcNow.AddDays(-3)
-        $options = New-TestOptions; $result = New-TestResult
+        $script:options = New-TestOptions
+        $script:result = New-TestResult
     }
     It 'removes stale files, preserves new files and is idempotent' {
         $new = Join-Path $root 'fresh.txt'; Set-Content -LiteralPath $new -Value 'new'
@@ -107,7 +111,8 @@ Describe 'Guarded file removal' {
 
 Describe 'Servicing and final validation' {
     BeforeEach {
-        $options = New-TestOptions; $result = New-TestResult
+        $script:options = New-TestOptions
+        $script:result = New-TestResult
         Mock Get-WCFact { @{ pending_reboot = $false; update_busy = $false; winrm = $true } }
         Mock Invoke-WCNative { @{ exit_code = 0; text = 'Measured DISM analysis' } }
     }
@@ -180,7 +185,6 @@ Describe 'Native command handling without servicing mocks' {
         $reboot.exit_code | Should -Be 3010
     }
     It 'uses real exit codes and bounds native execution' {
-        # These execute only harmless child PowerShell processes on the test host.
         { Invoke-WCNative -FilePath 'powershell.exe' -Arguments @('-NoProfile', '-Command', 'exit 7') } | Should -Throw '*exit code 7*'
         { Invoke-WCNative -FilePath 'powershell.exe' -Arguments @('-NoProfile', '-Command', 'Start-Sleep 10') -TimeoutSeconds 1 } | Should -Throw '*timed out*'
     }
