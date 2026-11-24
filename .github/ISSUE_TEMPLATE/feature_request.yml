@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest a cleanup operation, validation check or option.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New destructive operations need explicit configuration, a documented legacy or Microsoft source, dry-run behavior, reporting and tests. Proposals that widen deletion roots, run arbitrary commands, or make the provisioner shut down or generalize the guest are out of scope. See [Safety and reports](https://github.com/larskroghdk/packer-plugin-windows-cleanup/blob/main/docs/safety.md).
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Cleanup operation
+        - Validation check
+        - Configuration option
+        - Report output
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What you're trying to do, and why the plugin doesn't support it today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How it could work, including the configuration you would write.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Sources and safety
+      description: For a cleanup operation, the exact paths or Windows mechanism, a Microsoft or legacy source that supports it, what must be preserved, and what a dry run should report.

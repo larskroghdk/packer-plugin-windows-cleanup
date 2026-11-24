@@ -1,0 +1,128 @@
+name: Bug report
+description: The plugin failed, removed or kept the wrong files, or broke the Packer session.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Issues are public. Remove passwords, tokens, keys, host names and sensitive file names from everything you paste. JSON reports list removed and candidate paths.
+
+        Report deletion outside the allowed roots, exclusion bypasses and other security issues [privately](https://github.com/larskroghdk/packer-plugin-windows-cleanup/security/advisories/new) instead.
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: input
+    id: packer-version
+    attributes:
+      label: Packer version
+      description: Output of `packer version`.
+    validations:
+      required: true
+  - type: dropdown
+    id: builder
+    attributes:
+      label: Builder
+      options:
+        - qemu
+        - hyperv-iso
+        - hyperv-vmcx
+        - vsphere-iso
+        - vsphere-clone
+        - azure-arm
+        - "null"
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: communicator
+    attributes:
+      label: Communicator
+      description: The plugin supports WinRM only.
+      options:
+        - WinRM over HTTPS
+        - WinRM over HTTP
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Guest OS
+      options:
+        - Windows Server 2016
+        - Windows Server 2019
+        - Windows Server 2022
+        - Windows Server 2025
+        - Windows 10
+        - Windows 11
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: build
+    attributes:
+      label: Guest build
+      description: Output of `cmd /c ver` on the guest, including the update revision.
+      placeholder: 10.0.20348.2849
+    validations:
+      required: true
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation type
+      options:
+        - Desktop Experience / client
+        - Server Core
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Provisioner configuration
+      description: The `windows-cleanup` provisioner block, and the builder's `shutdown_command` if `sysprep = true`.
+      render: hcl
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The provisioners that run before cleanup, guest state such as pending updates, and what you ran.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Name any file, profile, log or setting that was removed or changed unexpectedly, and whether `dry_run` was set.
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: Report
+      description: The failing operations, warnings and run status from the JSON report, or the whole file.
+      render: json
+  - type: textarea
+    id: log
+    attributes:
+      label: Packer log
+      description: Output of the run with `PACKER_LOG=1`.
+      render: text
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Checks
+      options:
+        - label: I removed credentials, tokens and sensitive paths from this issue.
+          required: true
+        - label: I reproduced this on a disposable VM with the latest release.
